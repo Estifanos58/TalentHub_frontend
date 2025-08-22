@@ -7,6 +7,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useUserStore } from "@/state/data";
 import { loginUser } from "@/actions/loginUser";
+import { useRouter } from "next/navigation";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email"),
@@ -18,6 +19,7 @@ type LoginInput = z.infer<typeof loginSchema>;
 export default function LoginPage() {
   const [actionState, setActionState] = useState<"idle" | "loading" | "success" | "error">("idle");
   const { addUser } = useUserStore();
+  const router = useRouter();
 
   const {
     register,
@@ -31,6 +33,7 @@ export default function LoginPage() {
     try {
       setActionState("loading");
       const response: any = await loginUser(data);
+      router.push('/jobs')
       setActionState("success");
       addUser(response);
     } catch (err) {

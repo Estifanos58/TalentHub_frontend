@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
+import { useUserStore } from "@/state/data";
 
 export default function Navbar() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const { user, removeUser } = useUserStore(); // assume you have removeUser in your store
 
   useEffect(() => setMounted(true), []);
   if (!mounted) return null;
@@ -55,19 +57,34 @@ export default function Navbar() {
               {theme === "dark" ? "☀️" : "🌙"}
             </button>
 
-            <Link
-              href="/register"
-              className="px-4 py-2 bg-primary dark:bg-primary-dark text-white rounded-md hover:bg-secondary dark:hover:bg-secondary-dark transition-colors"
-            >
-              Register
-            </Link>
-
-            <Link
-              href="/login"
-              className="px-4 py-2 border border-primary dark:border-primary-dark text-primary dark:text-primary-dark rounded-md hover:bg-secondary dark:hover:bg-secondary-dark hover:text-white transition-colors"
-            >
-              Login
-            </Link>
+            {user ? (
+              <>
+                <span className="text-primary dark:text-primary-dark font-medium">
+                  Welcome, {user.username}
+                </span>
+                <button
+                  onClick={removeUser}
+                  className="px-4 py-2 border border-red-500 text-red-500 rounded-md hover:bg-red-500 hover:text-white transition-colors"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/register"
+                  className="px-4 py-2 bg-primary dark:bg-primary-dark text-white rounded-md hover:bg-secondary dark:hover:bg-secondary-dark transition-colors"
+                >
+                  Register
+                </Link>
+                <Link
+                  href="/login"
+                  className="px-4 py-2 border border-primary dark:border-primary-dark text-primary dark:text-primary-dark rounded-md hover:bg-secondary dark:hover:bg-secondary-dark hover:text-white transition-colors"
+                >
+                  Login
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>

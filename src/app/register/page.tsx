@@ -7,6 +7,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { registerUser } from "@/actions/registerUser";
 import { useUserStore } from "@/state/data";
+import { useRouter } from "next/navigation";
 
 const registerSchema = z.object({
   username: z.string().min(3, "Username must be at least 3 characters"),
@@ -20,6 +21,7 @@ type RegisterInput = z.infer<typeof registerSchema>;
 export default function RegisterPage() {
   const [actionState, setActionState] = useState<"idle" | "loading" | "success" | "error">("idle");
   const { addUser } = useUserStore();
+  const router = useRouter();
 
   const {
     register,
@@ -33,6 +35,7 @@ export default function RegisterPage() {
     try {
       setActionState("loading");
       const response: any = await registerUser(data);
+      router.push("/jobs")
       setActionState("success");
       addUser(response);
     } catch (err) {

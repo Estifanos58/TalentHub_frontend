@@ -8,6 +8,7 @@ import Footer from "@/components/footer";
 import { useUserStore } from "@/state/data";
 import { getUser } from "@/actions/getUser";
 import { useEffect } from "react";
+import { ToastContainer, toast } from 'react-toastify';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -44,6 +45,7 @@ export default function RootLayout({
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <Navbar/>
+          <ToastContainer/>
           {children}
           <Footer/>
         </ThemeProvider>

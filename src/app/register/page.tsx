@@ -9,15 +9,17 @@ import { registerUser } from "@/actions/registerUser";
 import { useUserStore } from "@/state/data";
 import { useRouter } from "next/navigation";
 
+// ---------------- Schema ----------------
 const registerSchema = z.object({
   username: z.string().min(3, "Username must be at least 3 characters"),
   email: z.string().email("Invalid email"),
   password: z.string().min(6, "Password must be at least 6 characters"),
-  roles: z.array(z.enum(["employer", "applicant", "admin"])).nonempty("Select at least one role"),
+  role: z.enum(["employer", "applicant", "admin"]),
 });
 
 type RegisterInput = z.infer<typeof registerSchema>;
 
+// ---------------- Component ----------------
 export default function RegisterPage() {
   const [actionState, setActionState] = useState<"idle" | "loading" | "success" | "error">("idle");
   const { addUser } = useUserStore();
@@ -35,11 +37,10 @@ export default function RegisterPage() {
     try {
       setActionState("loading");
       const response: any = await registerUser(data);
-      router.push("/jobs")
-      setActionState("success");
       addUser(response);
+      setActionState("success");
+      router.push("/jobs");
     } catch (err) {
-      setActionState("idle");
       setActionState("error");
     }
   };
@@ -58,7 +59,9 @@ export default function RegisterPage() {
             <input
               type="text"
               {...register("username")}
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary-dark"
+              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md 
+              bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 
+              focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary-dark"
             />
             {errors.username && (
               <p className="text-red-500 text-sm mt-1">{errors.username.message}</p>
@@ -71,7 +74,9 @@ export default function RegisterPage() {
             <input
               type="email"
               {...register("email")}
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary-dark"
+              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md 
+              bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 
+              focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary-dark"
             />
             {errors.email && (
               <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
@@ -84,32 +89,28 @@ export default function RegisterPage() {
             <input
               type="password"
               {...register("password")}
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary-dark"
+              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md 
+              bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 
+              focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primary-dark"
             />
             {errors.password && (
               <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
             )}
           </div>
 
-          {/* Roles */}
+          {/* Role (radio buttons, single value) */}
           <div>
             <label className="block mb-1 text-primary dark:text-primary-dark">Select Role</label>
-            <div className="flex gap-4">
-              <label className="flex items-center gap-2">
-                <input type="checkbox" value="employer" {...register("roles")} />
-                Employer
-              </label>
-              <label className="flex items-center gap-2">
-                <input type="checkbox" value="applicant" {...register("roles")} />
-                Applicant
-              </label>
-              <label className="flex items-center gap-2">
-                <input type="checkbox" value="admin" {...register("roles")} />
-                Admin
-              </label>
+            <div className="flex gap-6">
+              {["employer", "applicant", "admin"].map((role) => (
+                <label key={role} className="flex items-center gap-2">
+                  <input type="radio" value={role} {...register("role")} />
+                  {role.charAt(0).toUpperCase() + role.slice(1)}
+                </label>
+              ))}
             </div>
-            {errors.roles && (
-              <p className="text-red-500 text-sm mt-1">{errors.roles.message}</p>
+            {errors.role && (
+              <p className="text-red-500 text-sm mt-1">{errors.role.message}</p>
             )}
           </div>
 

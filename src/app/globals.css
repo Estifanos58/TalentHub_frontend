@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
 @layer theme, base, components, utilities;
 
@@ -13,3 +14,4 @@
     --color-background-dark: #1F2937;
 }
 @custom-variant dark (&:where(.dark, .dark *));
+

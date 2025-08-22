@@ -36,6 +36,7 @@ export default function Navbar() {
     { name: "Home", href: "/" },
     { name: "About Us", href: "/about" },
     { name: "Contact Me", href: "https://www.estifanos.tech" },
+    { name: "Create A Job", href: "jobs/create" },
   ];
 
   return (

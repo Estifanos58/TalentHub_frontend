@@ -6,7 +6,7 @@ import Link from "next/link";
 
 export default function JobApplicationSection({ jobId }: { jobId: string }) {
   const { user } = useUserStore(); 
-  console.log("Current user:", user);
+  // console.log("Current user:", user);
 
   if (!user) {
     return (

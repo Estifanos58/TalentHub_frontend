@@ -1,5 +1,8 @@
+import { getUser } from "@/actions/getUser";
 
-export default function Home() {
+export default async function Home() {
+  // const res = await getUser();
+  // console.log("RESPONE: ", res)
   return (
     <div className=" min-h-screen  bg-background dark:bg-background-dark text-primary dark:text-primary-dark flex flex-col items-center justify-center px-4">
       

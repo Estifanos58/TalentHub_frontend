@@ -4,11 +4,30 @@ import Link from "next/link";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { useUserStore } from "@/state/data";
+import { getUser } from "@/actions/getUser";
 
 export default function Navbar() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const { user, removeUser } = useUserStore(); // assume you have removeUser in your store
+  const [loading, setLoading] = useState(true); // ✅ loading state
+  const { user, addUser, removeUser } = useUserStore();
+
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        setLoading(true);
+        const fetchedUser = await getUser(); // must return user or null
+        if (fetchedUser) {
+          addUser(fetchedUser);
+        }
+      } catch (err) {
+        console.error("Error fetching user:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchUser();
+  }, [addUser]);
 
   useEffect(() => setMounted(true), []);
   if (!mounted) return null;
@@ -23,7 +42,6 @@ export default function Navbar() {
     <nav className="bg-background dark:bg-background-dark shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
-          
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link
@@ -57,7 +75,9 @@ export default function Navbar() {
               {theme === "dark" ? "☀️" : "🌙"}
             </button>
 
-            {user ? (
+            {loading ? (
+              <span className="text-gray-500">Loading...</span> // ✅ Loading indicator
+            ) : user ? (
               <>
                 <span className="text-primary dark:text-primary-dark font-medium">
                   Welcome, {user.username}

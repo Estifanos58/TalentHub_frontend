@@ -1,5 +1,5 @@
 export default function JobDetailCard({ job }: { job: any }) {
-    console.log("Job in JobDetailCard:", job);
+    // console.log("Job in JobDetailCard:", job);
     const deadline = new Date(job.deadline).toLocaleDateString("en-US", {
         year: "numeric",
         month: "long",

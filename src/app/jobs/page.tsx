@@ -21,7 +21,7 @@ export default async function JobsPage({
   const hasJobs = jobs.length > 0;
 
   return (
-    <div className="min-h-screen bg-background dark:bg-background-dark text-primary dark:text-primary-dark px-4 py-10">
+    <div className=" bg-background dark:bg-background-dark text-primary dark:text-primary-dark px-4 py-10">
       <h1 className="text-3xl font-bold mb-6 text-center text-primary dark:text-primary-dark">
         Available Jobs
       </h1>

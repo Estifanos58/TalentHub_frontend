@@ -22,12 +22,12 @@ export default async function JobDetailPage({
     <div className="min-h-screen bg-background dark:bg-background-dark text-primary dark:text-primary-dark px-4 py-10">
       <div className="flex flex-col md:flex-row gap-6 max-w-6xl mx-auto">
         {/* Left: Application Form */}
-        <div className="md:w-1/2 bg-white dark:bg-gray-800 shadow-md rounded-xl p-6">
+        <div className="md:w-1/3 max-h-[400px]  bg-white dark:bg-gray-800 shadow-md rounded-xl p-6">
           <ApplicationForm jobId={job.id} />
         </div>
 
         {/* Right: Job Details */}
-        <div className="md:w-1/2">
+        <div className="md:w-2/3">
           <JobDetailCard job={job.job} />
         </div>
       </div>

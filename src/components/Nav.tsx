@@ -14,7 +14,7 @@ export default function Navbar() {
   const navLinks = [
     { name: "Home", href: "/" },
     { name: "About Us", href: "/about" },
-    { name: "Contact Us", href: "/contact" },
+    { name: "Contact Me", href: "https://www.estifanos.tech" },
   ];
 
   return (

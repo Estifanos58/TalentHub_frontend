@@ -1,7 +1,8 @@
 import { getJobById } from "@/actions/getJobById";
 import ApplicationForm from "@/components/ApplicationForm";
+import JobApplicationSection from "@/components/JobApplicationSection";
 import JobDetailCard from "@/components/JobDetail";
-
+import { useUserStore } from "@/state/data";
 
 export default async function JobDetailPage({
   params,
@@ -23,7 +24,7 @@ export default async function JobDetailPage({
       <div className="flex flex-col md:flex-row gap-6 max-w-6xl mx-auto">
         {/* Left: Application Form */}
         <div className="md:w-1/3 max-h-[400px]  bg-white dark:bg-gray-800 shadow-md rounded-xl p-6">
-          <ApplicationForm jobId={job.id} />
+          <JobApplicationSection jobId={params.id} />
         </div>
 
         {/* Right: Job Details */}

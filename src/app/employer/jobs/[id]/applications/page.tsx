@@ -3,16 +3,17 @@ import ApplicationTable from "@/components/ApplicationTable";
 import { getApplications } from "@/actions/getApplications";
 
 interface ApplicationsPageProps {
-  params: { id: string }; // dynamic job id from route
+  params: { id: string }; 
   searchParams: { [key: string]: string | string[] | undefined };
 }
 
 export default async function ApplicationsPage({ params, searchParams }: ApplicationsPageProps) {
-  const { id: jobId } = params;
+  const { id } = params;
 
   // Fetch applications for this job
-  const initialData = await getApplications({ ...searchParams, jobId });
+  const initialData = await getApplications({ searchParams: searchParams, jobId:id });
 
+  // console.log("Job ID from params:", id);
   const applications = initialData.applications || [];
   const count: number = initialData.count || 0;
   const currentPage: number = initialData.currentPage
@@ -24,6 +25,7 @@ export default async function ApplicationsPage({ params, searchParams }: Applica
 
 
   return (
+
     <div className="min-h-screen bg-background dark:bg-background-dark text-primary dark:text-primary-dark px-6 py-10">
       <div className="max-w-6xl mx-auto">
         {/* Header */}

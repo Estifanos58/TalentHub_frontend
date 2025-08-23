@@ -3,11 +3,15 @@
 import axios from "axios";
 import { cookies } from "next/headers";
 
-export async function getApplications(
-  searchParams: { [key: string]: string | string[] | undefined },
-  jobId?: string
-) {
+export async function getApplications({
+  searchParams,
+  jobId,
+}: {
+  searchParams: any;
+  jobId?: string;
+}) {
   try {
+
     const cookie = await cookies();
     const token = cookie.get("token")?.value;
     if (!token) {
@@ -21,9 +25,9 @@ export async function getApplications(
 
     const response = await axios.get(`${apiUrl}/application`, {
       params: {
+        jobId: jobId,
         page,
         limit: ITEM_PER_PAGE,
-        jobId
       },
       headers: {
         Authorization: `Bearer ${token}`,
@@ -35,7 +39,7 @@ export async function getApplications(
       throw new Error("Failed to fetch applications");
     }
 
-    return response.data; 
+    return response.data;
   } catch (error) {
     throw error;
   }

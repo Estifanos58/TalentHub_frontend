@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import axios from "axios";
+import { applyJob } from "@/actions/applyJob";
+import { toast } from "react-toastify";
 
 export default function ApplicationForm({ jobId }: { jobId: string }) {
   const [coverLetter, setCoverLetter] = useState("");
@@ -23,6 +25,7 @@ export default function ApplicationForm({ jobId }: { jobId: string }) {
         `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_NAME!}/upload`,
         formData
       );
+      console.log("Upload successful:", res.data);
       setFileUrl(res.data.secure_url);
     } catch (err) {
       console.error("Upload failed:", err);
@@ -33,17 +36,13 @@ export default function ApplicationForm({ jobId }: { jobId: string }) {
 
   const handleSubmit = async () => {
     // Example API call to your backend
-    await axios.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/application`,
-      {
-        jobId,
-        coverLetter,
-        resume: fileUrl,
-      },
-      { withCredentials: true }
-    );
-    alert("Application submitted!");
-  };
+    try {
+      const response = await applyJob(jobId, coverLetter, fileUrl);
+      toast.success("Application submitted successfully!");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to submit application");
+    }
+  }
 
   return (
     <div className="flex flex-col gap-4">
@@ -72,4 +71,5 @@ export default function ApplicationForm({ jobId }: { jobId: string }) {
       </button>
     </div>
   );
+
 }

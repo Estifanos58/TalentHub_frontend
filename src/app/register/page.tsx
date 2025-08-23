@@ -8,6 +8,7 @@ import Link from "next/link";
 import { registerUser } from "@/actions/registerUser";
 import { useUserStore } from "@/state/data";
 import { useRouter } from "next/navigation";
+import { toast } from 'react-toastify'
 
 // ---------------- Schema ----------------
 const registerSchema = z.object({
@@ -38,6 +39,7 @@ export default function RegisterPage() {
       setActionState("loading");
       const response: any = await registerUser(data);
       addUser(response);
+      toast.success("Registration successful!");
       setActionState("success");
       router.push("/jobs");
     } catch (err) {

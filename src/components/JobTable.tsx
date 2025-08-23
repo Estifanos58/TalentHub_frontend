@@ -11,12 +11,15 @@ function JobTable({ jobs, yourJob }: { jobs: any[]; yourJob?: boolean }) {
   const router = useRouter();
   const { user } = useUserStore();
 
-  const handleDelete = async(jobId: string) => {
+  const handleDelete = async (jobId: string) => {
     try {
-      const response  = await deleteJob(jobId);
-      toast.success("Job Deleted")
+      await deleteJob(jobId);
+      toast.success('Job Deleted');
+      router.refresh();
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Deletion Error Occured")
+      toast.error(
+        error instanceof Error ? error.message : 'Deletion Error Occurred'
+      );
     }
   };
 
@@ -33,11 +36,21 @@ function JobTable({ jobs, yourJob }: { jobs: any[]; yourJob?: boolean }) {
       <table className="min-w-full table-auto border-collapse border border-gray-300 dark:border-gray-700 text-xs md:text-sm lg:text-base">
         <thead className="bg-gray-100 dark:bg-gray-800">
           <tr>
-            <th className="px-2 md:px-4 py-2 border-b border-gray-300 dark:border-gray-700 text-left">Title</th>
-            <th className="px-2 md:px-4 py-2 border-b border-gray-300 dark:border-gray-700 text-left">Type</th>
-            <th className="px-2 md:px-4 py-2 border-b border-gray-300 dark:border-gray-700 text-left">Site</th>
-            <th className="px-2 md:px-4 py-2 border-b border-gray-300 dark:border-gray-700 text-left">Experience</th>
-            <th className="px-2 md:px-4 py-2 border-b border-gray-300 dark:border-gray-700 text-left">Actions</th>
+            <th className="px-2 md:px-4 py-2 border-b border-gray-300 dark:border-gray-700 text-left">
+              Title
+            </th>
+            <th className="px-2 md:px-4 py-2 border-b border-gray-300 dark:border-gray-700 text-left">
+              Type
+            </th>
+            <th className="px-2 md:px-4 py-2 border-b border-gray-300 dark:border-gray-700 text-left">
+              Site
+            </th>
+            <th className="px-2 md:px-4 py-2 border-b border-gray-300 dark:border-gray-700 text-left">
+              Experience
+            </th>
+            <th className="px-2 md:px-4 py-2 border-b border-gray-300 dark:border-gray-700 text-left">
+              Actions
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -63,8 +76,8 @@ function JobTable({ jobs, yourJob }: { jobs: any[]; yourJob?: boolean }) {
                   {job.experience}
                 </td>
                 <td className="px-2 md:px-4 py-2 border-b border-gray-300 dark:border-gray-700 flex space-x-2">
-                  {/* Show View only if NOT creator */}
-                  {!isCreator && (
+                  {/* Show View if NOT creator OR if yourJob is true */}
+                  {(!isCreator || yourJob) && (
                     <button
                       onClick={() => handleView(job._id)}
                       className="p-1 bg-blue-500 hover:bg-blue-600 text-white rounded-md"

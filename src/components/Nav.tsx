@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import { useUserStore } from "@/state/data";
 import { getUser } from "@/actions/getUser";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import { logOut } from "@/actions/logOut";
+import { toast } from "react-toastify";
 
 
 export default function Navbar() {
@@ -50,6 +52,17 @@ export default function Navbar() {
     if (Array.isArray(link.permission)) return link.permission.includes(user.role);
     return user.role === link.permission;
   });
+
+  const handelLogOut = async () => {
+    try {
+      await logOut()
+      removeUser();
+      toast.success('Logged out successfully');
+      setMobileOpen(false);
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
 
   return (
     <nav className="bg-background dark:bg-background-dark shadow-md">
@@ -96,7 +109,7 @@ export default function Navbar() {
                   Welcome, {user.username}
                 </span>
                 <button
-                  onClick={removeUser}
+                  onClick={handelLogOut}
                   className="px-4 py-2 border border-red-500 text-red-500 rounded-md hover:bg-red-500 hover:text-white transition-colors"
                 >
                   Logout

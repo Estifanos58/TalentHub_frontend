@@ -41,7 +41,11 @@ export default function RegisterPage() {
       addUser(response);
       toast.success("Registration successful!");
       setActionState("success");
-      router.push("/jobs");
+       if(response.role === 'admin'){
+        router.push('/admin')
+      }else {
+        router.push('/jobs')
+      }
     } catch (err) {
       setActionState("error");
     }

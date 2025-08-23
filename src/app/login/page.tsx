@@ -36,7 +36,11 @@ export default function LoginPage() {
       setActionState("loading");
       const response: any = await loginUser(data);
       toast.success("Login successful!");
-      router.push('/jobs')
+      if(response.role === 'admin'){
+        router.push('/admin')
+      }else {
+        router.push('/jobs')
+      }
       setActionState("success");
       // console.log("response",response)
       addUser(response);

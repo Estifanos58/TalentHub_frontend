@@ -38,7 +38,7 @@ export default function Navbar() {
     { name: "About Us", href: "/about", permission: "all" },
     { name: "Contact Me", href: "https://www.estifanos.tech", permission: "all" },
     { name: "Create A Job", href: "/jobs/create", permission: ["employer", "admin"] },
-    { name: "Applications", href: "/applications", permission: ["employer", "admin", "applicant"] },
+    { name: "Applications", href: "/applications", permission: ["applicant"] },
     { name: "Admin", href: "/admin", permission: "admin" },
     { name: "Your Jobs", href: "/employer/jobs", permission: ["employer", "admin"] },
   ];

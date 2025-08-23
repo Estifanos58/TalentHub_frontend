@@ -38,6 +38,7 @@ export default function LoginPage() {
       toast.success("Login successful!");
       router.push('/jobs')
       setActionState("success");
+      // console.log("response",response)
       addUser(response);
     } catch (err) {
       setActionState("idle");

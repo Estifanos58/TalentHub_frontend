@@ -14,7 +14,8 @@ export const loginUser = async (data: { email: string; password: string }) => {
         }
     
         cookie.set('token', response.data.token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'strict' });
-        return response.data.data;
+        // console.log("response data",response.data)
+        return response.data.user;
     
     } catch (error) {
         console.error('Error logging in user:', error);

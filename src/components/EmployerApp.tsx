@@ -1,19 +1,38 @@
-'use client';
+"use client";
 
+import { updateApplicationStatus } from "@/actions/updateApplicationStatus";
 import { useUserStore } from "@/state/data";
 import React, { useState } from "react";
+import { toast } from "react-toastify";
 
 function EmployerApp({ application }: any) {
   const [selectedStatus, setSelectedStatus] = useState<
     "shortlisted" | "rejected" | null
   >(null);
   const { user } = useUserStore();
+  const [isLoading, setLoading] =  useState(false)
 
-  const handleSubmit = async () => {};
+  const handleSubmit = async () => {
+    try {
+      if (!selectedStatus) {
+        return;
+      }
+      setLoading(true)
+      await updateApplicationStatus({applicationId: application._id, status:selectedStatus});
+      
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "An unexpected error occurred"
+      );
+    } finally{
+      setLoading(false)
+      setSelectedStatus(null)
+    }
+  };
 
   return (
     <div>
-      {user && user._id === application.jobId.createdBy ? (
+      {user && user._id === application.jobId.createdBy._id ? (
         <div className="mt-6 space-y-3">
           <div className="flex gap-3">
             <button
@@ -39,10 +58,10 @@ function EmployerApp({ application }: any) {
           </div>
           <button
             onClick={handleSubmit}
-            disabled={!selectedStatus}
+            disabled={!selectedStatus || isLoading}
             className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg disabled:bg-gray-400"
           >
-            Submit
+           {isLoading ? "Submitting ..." : "Submit"  } 
           </button>
         </div>
       ) : null}

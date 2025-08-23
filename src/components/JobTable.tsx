@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React from 'react'
 
-function JobTable({jobs}: {jobs: any[]}) {
+function JobTable({jobs, yourJob}: {jobs: any[], yourJob?: boolean}) {
   const router = useRouter();
   return (
      <div className="overflow-x-auto">
@@ -21,7 +21,7 @@ function JobTable({jobs}: {jobs: any[]}) {
             {jobs.map((job: any) => (
               <tr key={job._id} className="hover:bg-gray-50 cursor-pointer dark:hover:bg-gray-900">
                 <td className="px-4 py-2 border-b border-gray-300 dark:border-gray-700">
-                  <Link href={`/jobs/${job._id}`}>{job.title}</Link>
+                  <Link href={yourJob ? `/employer/jobs/${job._id}/applications` :`/jobs/${job._id}`}>{job.title}</Link>
                   </td>
                 <td className="px-4 py-2 border-b border-gray-300 dark:border-gray-700">{job.type}</td>
                 <td className="px-4 py-2 border-b border-gray-300 dark:border-gray-700">{job.site}</td>

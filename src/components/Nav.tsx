@@ -5,21 +5,22 @@ import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { useUserStore } from "@/state/data";
 import { getUser } from "@/actions/getUser";
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+
 
 export default function Navbar() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const [loading, setLoading] = useState(true); // ✅ loading state
+  const [loading, setLoading] = useState(true);
+  const [mobileOpen, setMobileOpen] = useState(false); // mobile menu toggle
   const { user, addUser, removeUser } = useUserStore();
 
   useEffect(() => {
     async function fetchUser() {
       try {
         setLoading(true);
-        const fetchedUser = await getUser(); // must return user or null
-        if (fetchedUser) {
-          addUser(fetchedUser);
-        }
+        const fetchedUser = await getUser();
+        if (fetchedUser) addUser(fetchedUser);
       } catch (err) {
         console.error("Error fetching user:", err);
       } finally {
@@ -33,13 +34,22 @@ export default function Navbar() {
   if (!mounted) return null;
 
   const navLinks = [
-    { name: "Home", href: "/" },
-    { name: "About Us", href: "/about" },
-    { name: "Contact Me", href: "https://www.estifanos.tech" },
-    { name: "Create A Job", href: "jobs/create" },
-    { name: "Applications", href: "/applications" },
-    { name: "Admin", href: "/admin" },
+    { name: "Home", href: "/", permission: "all" },
+    { name: "About Us", href: "/about", permission: "all" },
+    { name: "Contact Me", href: "https://www.estifanos.tech", permission: "all" },
+    { name: "Create A Job", href: "/jobs/create", permission: ["employer", "admin"] },
+    { name: "Applications", href: "/applications", permission: ["employer", "admin", "applicant"] },
+    { name: "Admin", href: "/admin", permission: "admin" },
+    { name: "Your Jobs", href: "/employer/jobs", permission: ["employer", "admin"] },
   ];
+
+  // Filter links based on user role
+  const filteredLinks = navLinks.filter((link) => {
+    if (link.permission === "all") return true;
+    if (!user) return false;
+    if (Array.isArray(link.permission)) return link.permission.includes(user.role);
+    return user.role === link.permission;
+  });
 
   return (
     <nav className="bg-background dark:bg-background-dark shadow-md">
@@ -55,9 +65,9 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Center Links */}
+          {/* Desktop Links */}
           <div className="hidden md:flex space-x-8">
-            {navLinks.map((link) => (
+            {filteredLinks.map((link) => (
               <Link
                 key={link.name}
                 href={link.href}
@@ -68,7 +78,7 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* Right Buttons */}
+          {/* Right Buttons & Mobile Menu Toggle */}
           <div className="flex items-center space-x-4">
             {/* Dark mode toggle */}
             <button
@@ -79,7 +89,7 @@ export default function Navbar() {
             </button>
 
             {loading ? (
-              <span className="text-gray-500">Loading...</span> // ✅ Loading indicator
+              <span className="text-gray-500">Loading...</span>
             ) : user ? (
               <>
                 <span className="text-primary dark:text-primary-dark font-medium">
@@ -108,9 +118,35 @@ export default function Navbar() {
                 </Link>
               </>
             )}
+
+            {/* Mobile menu button */}
+            <button
+              className="md:hidden p-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              onClick={() => setMobileOpen(!mobileOpen)}
+            >
+              {mobileOpen ? <XMarkIcon className="w-6 h-6" /> : <Bars3Icon className="w-6 h-6" />}
+            </button>
           </div>
         </div>
       </div>
+
+      {/* Mobile Menu */}
+      {mobileOpen && (
+        <div className="md:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 shadow-md">
+          <div className="flex flex-col space-y-2 px-4 py-4">
+            {filteredLinks.map((link) => (
+              <Link
+                key={link.name}
+                href={link.href}
+                className="text-primary dark:text-primary-dark font-medium py-2 px-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                onClick={() => setMobileOpen(false)}
+              >
+                {link.name}
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
     </nav>
   );
 }

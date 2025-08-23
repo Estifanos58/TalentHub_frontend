@@ -4,7 +4,8 @@ import axios from "axios";
 import { cookies } from "next/headers";
 
 export async function getApplications(
-  searchParams: { [key: string]: string | string[] | undefined }
+  searchParams: { [key: string]: string | string[] | undefined },
+  jobId?: string
 ) {
   try {
     const cookie = await cookies();
@@ -22,6 +23,7 @@ export async function getApplications(
       params: {
         page,
         limit: ITEM_PER_PAGE,
+        jobId
       },
       headers: {
         Authorization: `Bearer ${token}`,

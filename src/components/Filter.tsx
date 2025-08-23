@@ -43,6 +43,7 @@ export default function Filter() {
     if (selectedExp) params.set("experience", selectedExp);
     else params.delete("experience");
 
+
     // Reset page to 1 when filter changes
     params.set("page", "1");
 

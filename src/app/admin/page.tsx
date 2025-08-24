@@ -6,17 +6,31 @@ import { FileText, Award, Briefcase, Building2, Users, FilePlus2, UserPlus } fro
 import { getAdminDashboard } from "@/actions/getAdminDashboard";
 import {toast} from 'react-toastify'
 import DashboardSkeleton from "@/components/AdminLoading";
+import { useUserStore } from "@/state/data";
+import { useRouter } from "next/navigation";
 
 export default function AdminDashboard() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const router = useRouter()
+  const {user} = useUserStore()
 
+    if(user?.role !== 'admin') {
+      router.push('/')
+      return
+    }
+    
   useEffect(() => {
     const fetchDashboard = async () => {
       try {
         setLoading(true);
-        const res = await getAdminDashboard()
-        setData(res);
+        const response = await getAdminDashboard()
+        if (!response.success) {
+          toast.error(response.message);
+          setLoading(false);
+          return;
+        }
+        setData(response.data);
       } catch (error) {
         console.error("Error loading dashboard:", error);
         toast.error(error instanceof Error ? error.message : "An unexpected error occurred");

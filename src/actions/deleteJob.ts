@@ -10,20 +10,24 @@ export async function deleteJob(jobId: string) {
     const cookie = await cookies();
     const token = cookie.get("token")?.value;
 
-    if (!token) throw new Error("No token found");
+    if (!token) {
+      return { success: false, status: 401, message: "No token found" };
+    }
 
     const res = await axios.delete(`${apiUrl}/jobs/${jobId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { Authorization: `Bearer ${token}` },
       withCredentials: true,
     });
 
-    if(res.status !== 200) throw new Error('Deletion Error Occured')
-    
-    return res.data
-  } catch (error) {
-    // console.log(error);
-    throw error;
+    return { success: true, status: res.status, data: res.data };
+  } catch (error: any) {
+    if (axios.isAxiosError(error)) {
+      return {
+        success: false,
+        status: error.response?.status || 500,
+        message: error.response?.data?.message || "Failed to delete job",
+      };
+    }
+    return { success: false, status: 500, message: "Unexpected error" };
   }
 }

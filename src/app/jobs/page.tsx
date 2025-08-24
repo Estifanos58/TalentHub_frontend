@@ -9,8 +9,10 @@ export default async function JobsPage({
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
   // Server-side data fetching based on URL searchParams
-  const initialData = await getJobs(searchParams);
+  const response = await getJobs(searchParams);
 
+  const initialData = response.data || {};
+  
   const jobs = initialData.jobs || [];
   const count: number = initialData.count || 0;
   const currentPage: number = initialData.currentPage

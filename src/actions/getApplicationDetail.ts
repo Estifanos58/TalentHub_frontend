@@ -9,7 +9,7 @@ export async function getApplicationDetail(applicationId: string) {
     const token = cookie.get("token")?.value;
 
     if (!token) {
-      throw new Error("User not authenticated");
+      return { success: false, status: 401, message: "User not authenticated" };
     }
 
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -19,11 +19,17 @@ export async function getApplicationDetail(applicationId: string) {
       withCredentials: true,
     });
 
-    if (response.status !== 200) {
-      throw new Error("Failed to fetch application details");
+    return { success: true, status: response.status, data: response.data.data };
+  } catch (error: any) {
+    if (axios.isAxiosError(error)) {
+      return {
+        success: false,
+        status: error.response?.status || 500,
+        message:
+          error.response?.data?.message ||
+          "Failed to fetch application details",
+      };
     }
-    return response.data.data;
-  } catch (error) {
-    throw error;
+    return { success: false, status: 500, message: "Unexpected error" };
   }
 }

@@ -1,15 +1,23 @@
 import { getJobById } from "@/actions/getJobById";
-import ApplicationForm from "@/components/ApplicationForm";
 import JobApplicationSection from "@/components/JobApplicationSection";
 import JobDetailCard from "@/components/JobDetail";
-import { useUserStore } from "@/state/data";
+import { toast } from "react-toastify";
 
 export default async function JobDetailPage({
   params,
 }: {
   params: { id: string };
 }) {
-  const job = await getJobById(params.id); // fetch job by ID
+  let job = null;
+  try {
+    const response = await getJobById(params.id); 
+    if(!response.success){
+      toast.error(response.message);
+    }
+    job = response.data;
+  } catch (error) {
+    toast.error(error instanceof Error ? error.message : "An unexpected error occurred");
+  }
 
   if (!job) {
     return (

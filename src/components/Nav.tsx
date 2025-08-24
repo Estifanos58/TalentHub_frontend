@@ -8,6 +8,7 @@ import { getUser } from "@/actions/getUser";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { logOut } from "@/actions/logOut";
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 
 export default function Navbar() {
@@ -16,24 +17,36 @@ export default function Navbar() {
   const [loading, setLoading] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false); // mobile menu toggle
   const { user, addUser, removeUser } = useUserStore();
+  const router = useRouter()
 
-  useEffect(() => {
-    async function fetchUser() {
-      try {
-        setLoading(true);
-        const fetchedUser = await getUser();
-        if (fetchedUser) addUser(fetchedUser);
-      } catch (err) {
-        console.error("Error fetching user:", err);
-      } finally {
-        setLoading(false);
+useEffect(() => {
+  async function fetchUser() {
+    try {
+      setLoading(true);
+      const response = await getUser();
+      console.log("Fetched Response:", response);
+
+      if (response.success && response.data) {
+        addUser(response.data);
+      } else {
+        removeUser(); // ensures we clear stale user
       }
+    } catch (err) {
+      console.error("Error fetching user:", err);
+      removeUser();
+    } finally {
+      setLoading(false);
     }
-    fetchUser();
-  }, [addUser]);
+  }
+  fetchUser();
+}, [addUser, removeUser]);
+
+
 
   useEffect(() => setMounted(true), []);
   if (!mounted) return null;
+
+  // console.log("Current User:", user);
 
   const navLinks = [
     { name: "Home", href: "/", permission: "all" },
@@ -57,6 +70,7 @@ export default function Navbar() {
     try {
       await logOut()
       removeUser();
+      router.push('/')
       toast.success('Logged out successfully');
       setMobileOpen(false);
     } catch (error) {
@@ -103,7 +117,7 @@ export default function Navbar() {
 
             {loading ? (
               <span className="text-gray-500">Loading...</span>
-            ) : user ? (
+            ) : user?.username ? (
               <>
                 <span className="text-primary dark:text-primary-dark font-medium">
                   Welcome, {user.username}

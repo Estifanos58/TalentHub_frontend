@@ -9,10 +9,10 @@ export default async function ApplicationsPage({
   searchParams: { [key: string]: string | string[] | undefined };
 }) { 
 
-  // Fetch applications (server-side)
-  const initialData = await getApplications(searchParams);
+  const response = await getApplications(searchParams);
 
-  // console.log("Initial Data:", initialData);
+  const initialData = response.data
+  console.log("Initial Data:", response);
 
   const applications = initialData.applications || [];
   const count: number = initialData.count || 0;

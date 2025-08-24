@@ -26,18 +26,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const {addUser} = useUserStore()
 
-  async function fetchUser() {
-    const user = await getUser(); // Assume getUser is a function that fetches the user data
-    if (user) {
-      addUser(user);
-    }
-  }
-
-  useEffect(()=>{
-    fetchUser();
-  },[])
   return (
     <html lang="en">
       <body

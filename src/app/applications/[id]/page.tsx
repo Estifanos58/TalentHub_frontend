@@ -1,19 +1,39 @@
 import { getApplicationDetail } from "@/actions/getApplicationDetail";
 import EmployerApp from "@/components/EmployerApp";
 import React from "react";
-import { toast } from "react-toastify";
+import Link from "next/link";
 
 export default async function ApplicationDetail({
   params,
 }: {
   params: { id: string };
 }) {
-  let application: any;
+  let application: any = null;
+
   try {
-    application = await getApplicationDetail(params.id);
-    console.log('Application Details:', application);
+    const response = await getApplicationDetail(params.id);
+    application = response.success ? response.data : null;
   } catch (error) {
-    toast.error("Failed to load application details.");
+    application = null;
+  }
+
+  if (!application) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center text-center p-6">
+        <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4">
+          Application not found
+        </h2>
+        <p className="text-gray-600 dark:text-gray-400 mb-6">
+          The application you’re looking for doesn’t exist or has been removed.
+        </p>
+        <Link
+          href="/applications"
+          className="px-6 py-2 bg-primary text-white rounded-md hover:bg-secondary transition-colors"
+        >
+          Back to Applications
+        </Link>
+      </div>
+    );
   }
 
   return (
@@ -21,15 +41,24 @@ export default async function ApplicationDetail({
       {/* Left Side: Job Detail */}
       <div className="bg-white p-6 rounded-xl shadow-sm space-y-2">
         <h2 className="text-xl font-bold">{application.jobId.title}</h2>
-        <p className="text-gray-600">Company: {application.jobId.createdBy.username}</p>
+        <p className="text-gray-600">
+          Company: {application.jobId.createdBy.username}
+        </p>
         <p className="text-gray-700">{application.jobId.description}</p>
         <p className="text-gray-600">Site: {application.jobId.site}</p>
         <p className="text-gray-600">Experience: {application.jobId.experience}</p>
         <p className="text-gray-600">Type: {application.jobId.type}</p>
         <p className="text-gray-600">Salary: ${application.jobId.salary}</p>
-        <p className="text-gray-600">Deadline: {new Date(application.jobId.deadline).toLocaleDateString()}</p>
-        <p className="text-gray-600">Number of Applicants: {application.jobId.noOfApplicants}</p>
-        <p className="text-gray-600">Applicants Needed: {application.jobId.applicantsNeeded}</p>
+        <p className="text-gray-600">
+          Deadline:{" "}
+          {new Date(application.jobId.deadline).toLocaleDateString()}
+        </p>
+        <p className="text-gray-600">
+          Number of Applicants: {application.jobId.noOfApplicants}
+        </p>
+        <p className="text-gray-600">
+          Applicants Needed: {application.jobId.applicantsNeeded}
+        </p>
       </div>
 
       {/* Right Side: Application Detail */}

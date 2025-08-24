@@ -37,11 +37,18 @@ export default function RegisterPage() {
   const onSubmit = async (data: RegisterInput) => {
     try {
       setActionState("loading");
-      const response: any = await registerUser(data);
-      addUser(response);
+      const response = await registerUser(data);
+
+      if(!response.success){
+        setActionState("error");
+        toast.error(response.message || "Registration failed. Please try again.");
+        return;
+      }
+      
+      addUser(response.data);
       toast.success("Registration successful!");
       setActionState("success");
-       if(response.role === 'admin'){
+       if(response.data.role === 'admin'){
         router.push('/admin')
       }else {
         router.push('/jobs')

@@ -66,11 +66,14 @@ export default function CreateJobPage() {
       setLoading(true);
       console.log("Creating Job:", values);
 
-      await createJob(values as any);
+      const response = await createJob(values as any);
+
+      if (!response.success) {
+        toast.error(response.message);
+        return;
+      }
       toast.success("Job created successfully!")
-      setLoading(false)
       router.push("/jobs");
-      // reset form after successful submission
       form.reset();
     } catch (error) {
       console.error("Error creating job:", error);

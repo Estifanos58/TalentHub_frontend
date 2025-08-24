@@ -1,21 +1,19 @@
-"use server";
-
 import axios from "axios";
 import { cookies } from "next/headers";
 
-export async function getApplications({
-  searchParams,
-  jobId,
-}: {
-  searchParams: any;
-  jobId?: string;
-}) {
+export async function getApplications(
+  searchParams: { [key: string]: string | string[] | undefined },
+  jobId?: string
+) {
   try {
-
     const cookie = await cookies();
     const token = cookie.get("token")?.value;
     if (!token) {
-      throw new Error("User not authenticated");
+      return {
+        success: false,
+        status: 401,
+        message: "User not authenticated",
+      };
     }
 
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -25,7 +23,7 @@ export async function getApplications({
 
     const response = await axios.get(`${apiUrl}/application`, {
       params: {
-        jobId: jobId,
+        jobId,
         page,
         limit: ITEM_PER_PAGE,
       },
@@ -35,12 +33,19 @@ export async function getApplications({
       withCredentials: true,
     });
 
-    if (response.status !== 200) {
-      throw new Error("Failed to fetch applications");
+    return { success: true, status: response.status, data: response.data };
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      return {
+        success: false,
+        status: error.response?.status || 500,
+        message: error.response?.data?.message || "Something went wrong",
+      };
     }
-
-    return response.data;
-  } catch (error) {
-    throw error;
+    return {
+      success: false,
+      status: 500,
+      message: "Unexpected error occurred",
+    };
   }
 }

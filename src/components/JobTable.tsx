@@ -13,7 +13,11 @@ function JobTable({ jobs, yourJob }: { jobs: any[]; yourJob?: boolean }) {
 
   const handleDelete = async (jobId: string) => {
     try {
-      await deleteJob(jobId);
+      const response = await deleteJob(jobId);
+      if (!response.success) {
+        toast.error(response.message);
+        return;
+      }
       toast.success('Job Deleted');
       router.refresh();
     } catch (error) {

@@ -34,16 +34,23 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginInput) => {
     try {
       setActionState("loading");
-      const response: any = await loginUser(data);
+      const response = await loginUser(data);
+
+      if (!response.success) {
+        setActionState("error");
+        toast.error(response.message || "Login failed. Please try again.");
+        return;
+      }
+
       toast.success("Login successful!");
-      if(response.role === 'admin'){
+      if(response.data.role === 'admin'){
         router.push('/admin')
       }else {
         router.push('/jobs')
       }
       setActionState("success");
       // console.log("response",response)
-      addUser(response);
+      addUser(response.data);
     } catch (err) {
       setActionState("idle");
       setActionState("error");

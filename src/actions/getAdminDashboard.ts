@@ -3,13 +3,13 @@
 import axios from "axios";
 import { cookies } from "next/headers";
 
-export const getAdminDashboard = async() => {
+export const getAdminDashboard = async () => {
   try {
     const cookie = await cookies();
     const token = cookie.get("token")?.value;
 
     if (!token) {
-      throw new Error("User not authenticated");
+      return { success: false, status: 401, message: "User not authenticated" };
     }
 
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -19,14 +19,17 @@ export const getAdminDashboard = async() => {
       withCredentials: true,
     });
 
-    if (response.status !== 200) {
-      throw new Error("Failed to fetch admin dashboard data");
+    return { success: true, status: response.status, data: response.data.data };
+  } catch (error: any) {
+    if (axios.isAxiosError(error)) {
+      return {
+        success: false,
+        status: error.response?.status || 500,
+        message:
+          error.response?.data?.message ||
+          "Failed to fetch admin dashboard data",
+      };
     }
-
-    return response.data.data;
-
-
-  } catch (error) {
-    throw error;
+    return { success: false, status: 500, message: "Unexpected error" };
   }
 };

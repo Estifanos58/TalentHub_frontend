@@ -4,11 +4,13 @@ import { useState } from "react";
 import axios from "axios";
 import { applyJob } from "@/actions/applyJob";
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 export default function ApplicationForm({ jobId }: { jobId: string }) {
   const [coverLetter, setCoverLetter] = useState("");
   const [fileUrl, setFileUrl] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const router = useRouter()
 
   // Upload file to Cloudinary
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,6 +40,13 @@ export default function ApplicationForm({ jobId }: { jobId: string }) {
     // Example API call to your backend
     try {
       const response = await applyJob(jobId, coverLetter, fileUrl);
+      if (!response.success) {
+        toast.error(response.message);
+        return;
+      }
+      setCoverLetter("");
+      setFileUrl(null);
+      router.refresh()
       toast.success("Application submitted successfully!");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Failed to submit application");

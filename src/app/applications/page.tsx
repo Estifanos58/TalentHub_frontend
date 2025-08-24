@@ -9,14 +9,22 @@ export default async function ApplicationsPage({
   searchParams: { [key: string]: string | string[] | undefined };
 }) { 
 
-  const response = await getApplications(searchParams);
+  let initialData: any = { applications: [], count: 0, currentPage: 1 };
 
-  const initialData = response.data
-  console.log("Initial Data:", response);
+  try {
+    const response = await getApplications({ searchParams });
+    if (response?.success) {
+      initialData = response.data || initialData;
+    } else {
+      console.error("Failed to fetch applications:", response?.message);
+    }
+  } catch (err) {
+    console.error("Error fetching applications:", err);
+  }
 
   const applications = initialData.applications || [];
-  const count: number = initialData.count || 0;
-  const currentPage: number = initialData.currentPage
+  const count = initialData.count || 0;
+  const currentPage = initialData.currentPage
     ? parseInt(initialData.currentPage)
     : 1;
 
@@ -43,3 +51,4 @@ export default async function ApplicationsPage({
     </div>
   );
 }
+

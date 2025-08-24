@@ -24,7 +24,7 @@ useEffect(() => {
     try {
       setLoading(true);
       const response = await getUser();
-      console.log("Fetched Response:", response);
+      // console.log("Fetched Response:", response);
 
       if (response.success && response.data) {
         addUser(response.data);

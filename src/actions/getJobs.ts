@@ -1,8 +1,11 @@
+'use server'
+
 import axios from "axios";
 
 export async function getJobs(
   searchParams: { [key: string]: string | string[] | undefined },
-  yourJob?: boolean
+  yourJob?: boolean,
+  userId?: string
 ) {
   try {
     const filteredParams = Object.fromEntries(
@@ -11,11 +14,12 @@ export async function getJobs(
       )
     );
 
-    const query = new URLSearchParams(
-      filteredParams as Record<string, string>
-    );
+    // console.log("Your Job", yourJob, "User ID:", userId);
+
+    const query = new URLSearchParams(filteredParams as Record<string, string>);
 
     if (yourJob !== undefined) {
+      query.append("userId", userId || "");
       query.append("yourJob", yourJob.toString());
     }
 
@@ -25,6 +29,7 @@ export async function getJobs(
       withCredentials: true,
     });
 
+    // console.log("API response:", res);
     return { success: true, status: res.status, data: res.data };
   } catch (error: any) {
     if (axios.isAxiosError(error)) {

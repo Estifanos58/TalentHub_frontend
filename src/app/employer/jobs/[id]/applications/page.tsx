@@ -11,8 +11,9 @@ export default async function ApplicationsPage({ params, searchParams }: Applica
   const { id } = params;
 
   // Fetch applications for this job
-  const initialData = await getApplications({ searchParams: searchParams, jobId:id });
+  const response = await getApplications({ searchParams: searchParams, jobId:id });
 
+  const initialData = response.data
   // console.log("Job ID from params:", id);
   const applications = initialData.applications || [];
   const count: number = initialData.count || 0;

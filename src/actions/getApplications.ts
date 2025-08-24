@@ -1,10 +1,13 @@
 import axios from "axios";
 import { cookies } from "next/headers";
 
-export async function getApplications(
-  searchParams: { [key: string]: string | string[] | undefined },
-  jobId?: string
-) {
+export async function getApplications({
+  searchParams,
+  jobId,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+  jobId?: string;
+}){
   try {
     const cookie = await cookies();
     const token = cookie.get("token")?.value;

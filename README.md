@@ -35,7 +35,7 @@ It serves as the user-facing interface for the **TalentHub Backend API** and is 
   - `/applications/[id]` → Application detail
 - **Employer**
   - `/employer/jobs` → Employer’s created jobs
-  - `/employer/jobs/[id]` → Job details for employer
+  - `/employer/jobs/[id]/applications` → Applications List For A Specific Job for employer
   - `/jobs/create` → Create a new job *(Employer/Admin only)*
 - **Admin**
   - `/admin` → Admin dashboard with analytics charts  

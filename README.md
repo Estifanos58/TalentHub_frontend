@@ -1,6 +1,6 @@
 # TalentHub Frontend
 
-This is the **TalentHub Frontend**, a **Next.js 14+** application for a job application platform.  
+This is the **TalentHub Frontend**, a **Next.js 15.5** application for a job application platform.  
 It serves as the user-facing interface for the **TalentHub Backend API** and is designed to provide a seamless experience for **applicants, employers, and admins**.  
 
 ---
